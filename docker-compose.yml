@@ -1,0 +1,47 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: task-manager-db
+
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    image: task-manager-backend:latest
+    container_name: task-manager-backend
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - db
+
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: taskdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+  frontend:
+    image: task-manager-frontend:latest
+    container_name: task-manager-frontend
+
+    ports:
+      - "5173:80"
+
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
