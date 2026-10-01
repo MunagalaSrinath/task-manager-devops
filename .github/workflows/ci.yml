@@ -45,3 +45,11 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
+
+
+      # Docker
+      - name: Build backend Docker image
+        run: docker build -t task-manager-backend:ci ./backend
+
+      - name: Build frontend Docker image
+        run: docker build -t task-manager-frontend:ci ./frontend
